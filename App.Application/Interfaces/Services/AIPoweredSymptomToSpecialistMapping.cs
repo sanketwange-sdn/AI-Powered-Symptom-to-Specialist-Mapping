@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,12 +52,5 @@ namespace App.Application.Interfaces.Services
         public string SpecialistSuggestion { get; set; }
         public string UrgencyLevel { get; set; }
         public List<Doctor> Doctors { get; set; }
-    }
-
-    public class Doctor
-    {
-        public string Name { get; set; }
-        public string Specialty { get; set; }
-        public string Availability { get; set; }
     }
 }

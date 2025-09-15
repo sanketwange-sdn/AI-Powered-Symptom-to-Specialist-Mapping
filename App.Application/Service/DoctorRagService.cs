@@ -1,4 +1,7 @@
-﻿using System;
+﻿using App.Application.Interfaces.Repositories;
+using App.Application.Interfaces.Services;
+using App.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,42 +10,38 @@ using System.Threading.Tasks;
 namespace App.Application.Service
 {
 
-    using global::App.Application.Interfaces.Services;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     namespace App.Application.Services
     {
         public class DoctorRagService : IDoctorRagService
         {
-            // Dummy doctor database for demonstration
-            private static readonly List<Doctor> Doctors = new()
-        {
-            new Doctor { Name = "Dr. Alice Smith", Specialty = "Cardiologist", Availability = "Mon 10am, Wed 2pm" },
-            new Doctor { Name = "Dr. Bob Jones", Specialty = "Dermatologist", Availability = "Tue 1pm, Thu 9am" },
-            new Doctor { Name = "Dr. Carol Lee", Specialty = "Neurologist", Availability = "Fri 11am" },
-            new Doctor { Name = "Dr. David Kim", Specialty = "Gastroenterologist", Availability = "Mon 3pm, Thu 4pm" },
-            new Doctor { Name = "Dr. Eva Patel", Specialty = "General Practitioner", Availability = "Everyday 8am-5pm" }
-        };
+            private readonly IDoctorRepository _doctorRepository;
 
-            public Task<List<Doctor>> RetrieveMatchingDoctorsAsync(string specialist, string urgencyLevel)
+
+            public DoctorRagService(IDoctorRepository doctorRepository)
             {
-                // Simple filter by specialty. In production, use vector search and consider urgency.
-                var matchingDoctors = Doctors
-                    .Where(d => d.Specialty.Equals(specialist, System.StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                _doctorRepository = doctorRepository;
+            }
 
-                // If no doctors found, fallback to General Practitioner
-                if (!matchingDoctors.Any())
+            public async Task<List<Doctor>> RetrieveMatchingDoctorsAsync(string specialist, string urgencyLevel)
+            {
+                List<Doctor> doctors = await _doctorRepository.GetDoctorsBySpecialtyAsync(specialist);
+
+                if (urgencyLevel.Equals("Urgent", StringComparison.OrdinalIgnoreCase))
                 {
-                    matchingDoctors = Doctors
-                        .Where(d => d.Specialty.Equals("General Practitioner", System.StringComparison.OrdinalIgnoreCase))
+                    //get doctors by availability for now its not implimented
+                    doctors = doctors
                         .ToList();
                 }
 
-                return Task.FromResult(matchingDoctors);
+                if (!doctors.Any())
+                {
+                    doctors = await _doctorRepository.GetDoctorsBySpecialtyAsync("General Practitioner");
+                }
+
+                return doctors;
             }
+
         }
     }
 
