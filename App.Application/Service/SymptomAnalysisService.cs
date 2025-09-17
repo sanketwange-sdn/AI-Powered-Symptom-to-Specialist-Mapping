@@ -32,6 +32,16 @@ namespace App.Application.Services
                 Console.WriteLine(_geminiEndpoint);
                 // 1. Use Gemini API to extract structured data
                 var (extractedSymptoms, specialistSuggestion, urgencyLevel) = await ExtractStructuredDataAsync(symptoms);
+                if (!extractedSymptoms.Any())
+                {
+                    // you can return as no symtoms found please try again 
+                    return new SymptomAnalysisResult
+                    {
+                        SpecialistSuggestion = "",
+                        UrgencyLevel = "",
+                        Doctors = null
+                    };
+                }
 
                 // 2. Map symptoms to specialist using taxonomy
                 var mappedSpecialist = await _medicalTaxonomyService.MapSymptomsToSpecialistAsync(extractedSymptoms);
@@ -73,7 +83,11 @@ namespace App.Application.Services
                         {
                             new
                             {
-                                text = $"Extract the following from this symptom description: 1) List of symptoms, 2) Most likely specialist type, 3) Urgency level (Urgent, Routine, etc). Respond ONLY in valid JSON format without any markdown, code block, or explanation. Example response: {{ \"symptoms\": [\"chest pain\"], \"specialist\": \"Cardiologist\", \"urgency\": \"Urgent\" }}. Symptom description: \"{symptoms}\""
+                                text = $"You are a professional medical assistant. Extract only real medical symptoms, specialist type, and urgency from the given description. " +
+                           $"If no medical symptoms are present, return {{\"symptoms\": [], \"specialist\": \"\", \"urgency\": \"\"}}. " +
+                           $"Respond ONLY in valid JSON format without explanation or markdown. " +
+                           $"Example: {{ \"symptoms\": [\"chest pain\"], \"specialist\": \"Cardiologist\", \"urgency\": \"Urgent\" }}. " +
+                           $"Symptom description: \"{symptoms}\""
                             }
                         }
                     }
