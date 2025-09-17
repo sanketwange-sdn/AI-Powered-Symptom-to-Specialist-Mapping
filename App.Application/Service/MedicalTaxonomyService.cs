@@ -19,20 +19,31 @@ namespace App.Application.Service
 
         public async Task<string> MapSymptomsToSpecialistAsync(List<string> extractedSymptoms)
         {
-            var inputEmbedding =  await ComputeEmbedding(string.Join(" ", extractedSymptoms));
+            //var inputEmbedding =  await ComputeEmbedding(string.Join(" ", extractedSymptoms));
             var embeddings = await _embeddingRepository.GetAllEmbeddingsAsync();
 
             string bestMatchSpecialist = "General Practitioner";
-            double highestSimilarity = 0;
+            double highestSimilarity = 0.8;
 
-            foreach (var record in embeddings)
+            // Compute embeddings for each individual symptom in parallel
+            var symptomEmbeddings = new List<float[]>();
+            foreach (var symptom in extractedSymptoms)
             {
-                var similarity = CosineSimilarity(inputEmbedding, record.EmbeddingVector);
+                var embedding = await ComputeEmbedding(symptom);
+                symptomEmbeddings.Add(embedding);
+            }
 
-                if (similarity > highestSimilarity)
+            foreach (var symptomEmbedding in symptomEmbeddings)
+            {
+                foreach (var record in embeddings)
                 {
-                    highestSimilarity = similarity;
-                    bestMatchSpecialist = record.Specialist;
+                    var similarity = CosineSimilarity(symptomEmbedding, record.EmbeddingVector);
+
+                    if (similarity > highestSimilarity)
+                    {
+                        highestSimilarity = similarity;
+                        bestMatchSpecialist = record.Specialist;
+                    }
                 }
             }
 
