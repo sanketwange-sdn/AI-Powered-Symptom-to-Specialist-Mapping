@@ -67,9 +67,138 @@ namespace App.Application.Service
         {
             var symptomToSpecialistMap = new Dictionary<string, string>
     {
-        { "chest pain", "Cardiologist" },
-        { "skin rash", "Dermatologist" },
-        { "headache", "Neurologist" }
+        // Cardiologist
+    { "chest pain", "Cardiologist" },
+    { "shortness of breath", "Cardiologist" },
+    { "irregular heartbeat", "Cardiologist" },
+    { "high blood pressure", "Cardiologist" },
+    { "swelling in legs", "Cardiologist" },
+    { "dizziness with exertion", "Cardiologist" },
+    { "palpitations", "Cardiologist" },
+
+    // Neurologist
+    { "headache", "Neurologist" },
+    { "migraine", "Neurologist" },
+    { "seizures", "Neurologist" },
+    { "memory loss", "Neurologist" },
+    { "confusion", "Neurologist" },
+    { "numbness", "Neurologist" },
+    { "weakness on one side", "Neurologist" },
+    { "slurred speech", "Neurologist" },
+    { "dizziness", "Neurologist" },
+    { "tremors", "Neurologist" },
+    { "difficulty walking", "Neurologist" },
+
+    // Dermatologist
+    { "skin rash", "Dermatologist" },
+    { "itching", "Dermatologist" },
+    { "acne", "Dermatologist" },
+    { "eczema", "Dermatologist" },
+    { "psoriasis", "Dermatologist" },
+    { "hives", "Dermatologist" },
+    { "skin infection", "Dermatologist" },
+    { "hair loss", "Dermatologist" },
+    { "nail discoloration", "Dermatologist" },
+    { "moles changing color", "Dermatologist" },
+
+    // Gastroenterologist
+    { "abdominal pain", "Gastroenterologist" },
+    { "heartburn", "Gastroenterologist" },
+    { "diarrhea", "Gastroenterologist" },
+    { "constipation", "Gastroenterologist" },
+    { "blood in stool", "Gastroenterologist" },
+    { "nausea", "Gastroenterologist" },
+    { "vomiting", "Gastroenterologist" },
+    { "jaundice", "Gastroenterologist" },
+    { "bloating", "Gastroenterologist" },
+
+    // Pulmonologist
+    { "cough", "Pulmonologist" },
+    { "chronic cough", "Pulmonologist" },
+    { "asthma", "Pulmonologist" },
+    { "wheezing", "Pulmonologist" },
+    { "lung infection", "Pulmonologist" },
+    { "chest tightness", "Pulmonologist" },
+    { "difficulty breathing", "Pulmonologist" },
+    { "sleep apnea", "Pulmonologist" },
+
+    // Endocrinologist
+    { "diabetes", "Endocrinologist" },
+    { "thyroid swelling", "Endocrinologist" },
+    { "excessive thirst", "Endocrinologist" },
+    { "excessive urination", "Endocrinologist" },
+    { "sudden weight loss", "Endocrinologist" },
+    { "sudden weight gain", "Endocrinologist" },
+    { "fatigue", "Endocrinologist" },
+    { "hair thinning", "Endocrinologist" },
+
+    // Orthopedic
+    { "joint pain", "Orthopedic" },
+    { "knee pain", "Orthopedic" },
+    { "back pain", "Orthopedic" },
+    { "shoulder pain", "Orthopedic" },
+    { "fracture", "Orthopedic" },
+    { "sports injury", "Orthopedic" },
+    { "stiff joints", "Orthopedic" },
+    { "bone pain", "Orthopedic" },
+    { "arthritis", "Orthopedic" },
+
+    // Urologist
+    { "frequent urination", "Urologist" },
+    { "painful urination", "Urologist" },
+    { "blood in urine", "Urologist" },
+    { "kidney stones", "Urologist" },
+    { "difficulty urinating", "Urologist" },
+    { "incontinence", "Urologist" },
+    { "testicular pain", "Urologist" },
+
+    // Gynecologist
+    { "irregular periods", "Gynecologist" },
+    { "menstrual cramps", "Gynecologist" },
+    { "pregnancy symptoms", "Gynecologist" },
+    { "pelvic pain", "Gynecologist" },
+    { "infertility", "Gynecologist" },
+    { "menopause symptoms", "Gynecologist" },
+    { "vaginal discharge", "Gynecologist" },
+
+    // Ophthalmologist
+    { "blurred vision", "Ophthalmologist" },
+    { "eye pain", "Ophthalmologist" },
+    { "red eyes", "Ophthalmologist" },
+    { "watery eyes", "Ophthalmologist" },
+    { "double vision", "Ophthalmologist" },
+    { "vision loss", "Ophthalmologist" },
+    { "eye strain", "Ophthalmologist" },
+    { "cataract", "Ophthalmologist" },
+    { "glaucoma", "Ophthalmologist" },
+
+    // ENT Specialist
+    { "ear pain", "ENT Specialist" },
+    { "hearing loss", "ENT Specialist" },
+    { "sore throat", "ENT Specialist" },
+    { "tonsillitis", "ENT Specialist" },
+    { "sinus pain", "ENT Specialist" },
+    { "nasal congestion", "ENT Specialist" },
+    { "tinnitus", "ENT Specialist" },
+    { "dizziness related to ear", "ENT Specialist" },
+
+    // Psychiatrist
+    { "depression", "Psychiatrist" },
+    { "anxiety", "Psychiatrist" },
+    { "insomnia", "Psychiatrist" },
+    { "panic attacks", "Psychiatrist" },
+    { "hallucinations", "Psychiatrist" },
+    { "suicidal thoughts", "Psychiatrist" },
+    { "bipolar symptoms", "Psychiatrist" },
+    { "addiction", "Psychiatrist" },
+
+    // General fallback
+    { "fever", "General Practitioner" },
+    { "fatigue without cause", "General Practitioner" },
+    { "loss of appetite", "General Practitioner" },
+    { "weakness", "General Practitioner" },
+    { "unexplained pain", "General Practitioner" },
+    { "general illness", "General Practitioner" }
         // Add more as needed
     };
 
@@ -97,7 +226,14 @@ namespace App.Application.Service
 
         public Task<List<SymptomEmbedding>> GetAllEmbeddingsAsync()
         {
-            var json = File.ReadAllText("C:\\Users\\91961\\OneDrive\\Documents\\SDN GEN AI assessment\\AI-Powered-Symptom-to-Specialist-Mapping\\App.Api\\wwwroot\\symptom_embeddings.json");
+
+            // Get the wwwroot path
+            var currentDir = Directory.GetCurrentDirectory();
+            var wwwrootPath = Path.Combine(currentDir, "wwwroot");
+            // Combine path to symptom_embeddings.json
+            var path = Path.Combine(wwwrootPath, "symptom_embeddings.json");
+
+            var json = File.ReadAllText(path);
             var embeddings = JsonSerializer.Deserialize<List<SymptomEmbedding>>(json);
             return Task.FromResult(embeddings);
         }
