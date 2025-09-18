@@ -51,6 +51,7 @@ namespace App.Application.Interfaces.Services
     {
         public string SpecialistSuggestion { get; set; }
         public string UrgencyLevel { get; set; }
+        public string UserFriendlyMessage { get; set; }
         public List<Doctor> Doctors { get; set; }
     }
 }

@@ -54,11 +54,72 @@ namespace App.Application.Services
                 var doctors = await _doctorRagService.RetrieveMatchingDoctorsAsync(specialistSuggestion, urgencyLevel);
 
                 // 4. Return structured result
+                string userFriendlyMessage = "";
+
+                if (doctors != null && doctors.Any())
+                {
+                    // 1. Serialize the structured data to be sent to Gemini
+                    var doctorsJson = System.Text.Json.JsonSerializer.Serialize(doctors);
+
+                    // 2. Craft the prompt for the second Gemini call
+                    var finalPrompt = $"You are a medical assistant. Based on the user's symptoms, a {specialistSuggestion} is suggested with an urgency of {urgencyLevel}. " +
+                                      $"Here is a list of matching doctors in JSON format: {doctorsJson}. " +
+                                      "Please provide a clear and concise summary for the user. Explain the specialist recommendation, the urgency, and list the doctors in a clean, easy-to-read format. " +
+                                      "Do not include any JSON or code blocks. Just provide the conversational text.";
+
+                    // 3. Make the Gemini API call
+                    using var httpClient = new HttpClient();
+                    httpClient.DefaultRequestHeaders.Add("X-goog-api-key", $"{_geminiApiKey}");
+
+                    var requestBody = new
+                    {
+                        contents = new[]
+                        {
+                            new
+                            {
+                                parts = new[]
+                                {
+                                    new
+                                    {
+                                        text = finalPrompt
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(requestBody), System.Text.Encoding.UTF8, "application/json");
+
+                    var response = await httpClient.PostAsync(_geminiEndpoint, content);
+                    response.EnsureSuccessStatusCode();
+
+                    var responseString = await response.Content.ReadAsStringAsync();
+
+                    // 4. Extract the text from the Gemini response
+                    // (This parsing will be similar to your ExtractStructuredDataAsync method)
+                    var finalResultDoc = System.Text.Json.JsonDocument.Parse(responseString);
+
+                    var root = finalResultDoc.RootElement;
+                    userFriendlyMessage = root
+                        .GetProperty("candidates")[0]
+                        .GetProperty("content")
+                        .GetProperty("parts")[0]
+                        .GetProperty("text")
+                        .GetString();
+                }
+                else
+                {
+                    userFriendlyMessage = $"Based on your symptoms, we suggest seeing a {specialistSuggestion}. We could not find any doctors in our database that match your request. Please try again later or contact your primary care physician.";
+                }
+
+
+                // 5. Return the structured result with the new user-friendly message
                 return new SymptomAnalysisResult
                 {
                     SpecialistSuggestion = specialistSuggestion,
                     UrgencyLevel = urgencyLevel,
-                    Doctors = doctors
+                    Doctors = doctors,
+                    UserFriendlyMessage = userFriendlyMessage 
                 };
             }
             catch (Exception ex)
