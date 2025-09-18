@@ -97,7 +97,7 @@ namespace App.Application.Service
 
         public Task<List<SymptomEmbedding>> GetAllEmbeddingsAsync()
         {
-            var json = File.ReadAllText("D:\\SmartData\\AI Assignment\\dotnetsmartPODBackendInitialArch\\App.Api\\wwwroot\\symptom_embeddings.json");
+            var json = File.ReadAllText("C:\\Users\\91961\\OneDrive\\Documents\\SDN GEN AI assessment\\AI-Powered-Symptom-to-Specialist-Mapping\\App.Api\\wwwroot\\symptom_embeddings.json");
             var embeddings = JsonSerializer.Deserialize<List<SymptomEmbedding>>(json);
             return Task.FromResult(embeddings);
         }
