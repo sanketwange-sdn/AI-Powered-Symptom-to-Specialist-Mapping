@@ -1,23 +1,17 @@
-# Use the official .NET 8 SDK image for building
+# Use official ASP.NET runtime as base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-
-# Copy csproj and restore dependencies
-COPY *.sln .
-COPY App.Api/*.csproj ./App.Api/
-RUN dotnet restore
-
-# Copy everything else and build
 COPY . .
-WORKDIR /src/App.Api
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet restore App.Api/App.Api.csproj
+RUN dotnet publish App.Api/App.Api.csproj -c Release -o /app/publish
 
-# Final runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Final stage
+FROM base AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-
-# Railway will expose PORT, so bind to it
-ENV ASPNETCORE_URLS=http://+:${PORT}
-
 ENTRYPOINT ["dotnet", "App.Api.dll"]
