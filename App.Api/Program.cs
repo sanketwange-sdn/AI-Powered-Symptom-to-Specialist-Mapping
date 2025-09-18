@@ -19,8 +19,12 @@ internal class Program
             Env.Load("development.env");
             var builder = WebApplication.CreateBuilder(args);
 
-         //   Make sure env vars are part of IConfiguration
-        builder.Configuration.AddEnvironmentVariables();
+            // Force to use Railway port (default 8080)
+            //var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+            //builder.WebHost.UseUrls($"http://0.0.0.0:{8080}");
+
+            //   Make sure env vars are part of IConfiguration
+            builder.Configuration.AddEnvironmentVariables();
 
             builder.Services.AddAppDependencies();
             builder.Services.AddConfiguredDbContexts(builder.Configuration);
@@ -33,7 +37,7 @@ internal class Program
             builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        
+            builder.WebHost.UseUrls($"http://0.0.0.0:{8080}");
             var app = builder.Build();
 
 
