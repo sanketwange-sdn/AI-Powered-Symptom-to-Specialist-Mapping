@@ -42,11 +42,10 @@ internal class Program
 
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-            if (app.Environment.IsDevelopment())
-            {
+           
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            
 
 
 
