@@ -35,7 +35,8 @@ internal class Program
                 .AddFluentValidationClientsideAdapters();
             builder.Services.AddValidatorsFromAssemblyContaining<UsersValidator>();
             builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen();
+
 
             var app = builder.Build();
 
