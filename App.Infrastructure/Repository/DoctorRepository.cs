@@ -33,8 +33,8 @@ namespace App.Infrastructure.Repository
         new Doctor { Id = 17, Name = "Dr. Quinn Adams", Specialty = "Allergist/Immunologist"},
         new Doctor { Id = 18, Name = "Dr. Rachel Green", Specialty = "Hematologist"},
         new Doctor { Id = 19, Name = "Dr. Samuel Turner", Specialty = "Plastic Surgeon"},
-        new Doctor { Id = 20, Name = "Dr. Tina Nguyen", Specialty = "Family Medicine"},
-        new Doctor { Id = 21, Name = "Dr. Kunal Wadibhasme", Specialty = "Cardiologist"},
+        new Doctor { Id = 20, Name = "Dr. Tina Nguyen", Specialty = "Family Medicine"}
+        //new Doctor { Id = 21, Name = "Dr. Kunal Wadibhasme", Specialty = "Cardiologist"},
     };
 
         public Task<List<Doctor>> GetAllDoctorsAsync()
