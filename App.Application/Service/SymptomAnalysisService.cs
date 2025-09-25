@@ -39,7 +39,8 @@ namespace App.Application.Services
                     {
                         SpecialistSuggestion = "",
                         UrgencyLevel = "",
-                        Doctors = null
+                        Doctors = null,
+                        UserFriendlyMessage = "Sorry, I couldn’t understand your symptoms. Could you please describe them in a bit more detail?"
                     };
                 }
 
